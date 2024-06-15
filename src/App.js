@@ -2,7 +2,7 @@ import './App.css';
 // const tg = window.Telegram.WebApp;
 import { useEffect } from 'react';
 import { useTelegram } from './hooks/useTelegram';
-// import Header from './components/Header/Header';
+import Header from './components/Header/Header';
 
 
 function App() {
@@ -18,9 +18,7 @@ function App() {
 
   return (
     <div className="App">
-    work
-      <button onClick={onClose}>Закрыть</button>
-      <span className={'username'}>{user?.username}</span>
+      <Header />
     </div>
   );
 }
