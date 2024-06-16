@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     background-color: #000; /* Черный фон */
-    padding: 10px;
+    padding: 5px;
     border-radius: 10px;
     color: #fff; /* Белый цвет текста */
     font-family: 'SF Pro', sans-serif; /* Применение кастомного шрифта */
@@ -20,19 +20,21 @@
 }
 
 .name {
-    font-size: 1.2em;
+    font-size: 17px;
 }
 
 .level {
-    color: #aaa; /* Светло-серый цвет для уровня */
+    color: #828282; /* Светло-серый цвет для уровня */
+    font-size: 14px;
 }
 
 .balance {
     text-align: right;
     color: #007bff; /* Синий цвет для баланса */
+    font-size: 17px;
 }
 
 .balance-text {
-    color: #aaa; /* Светло-серый цвет для подписи "Баланс" */
-    font-size: 0.8em;
+    color: #828282; /* Светло-серый цвет для подписи "Баланс" */
+    font-size: 14px;
 }

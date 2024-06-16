@@ -1,12 +1,15 @@
 import React from 'react';
-import './ProfileCard.css'; // Предположим, что стили будут в отдельном файле
+import './ProfileCard.css';
+import { truncate } from '../truncate';
 
 const ProfileCard = ({ avatar, name, level, balance }) => {
+    const truncatedName = truncate(name, 16);
+
     return (
         <div className="profile-card">
             <img src={avatar} alt="Avatar" className="avatar" />
             <div className="profile-info">
-                <div className="name">{name}</div>
+                <div className="name">{truncatedName}</div>
                 <div className="level">Уровень {level}</div>
             </div>
             <div className="balance">

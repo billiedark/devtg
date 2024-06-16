@@ -23,15 +23,16 @@ function App() {
       <ProfileCard
           avatar={avatarImg}
           name={user?.first_name}
-          level={7}
-          balance={22000}
+          //name="chief baccaraaa"
+          level={1}
+          balance={1500}
       />
 
         <RocketStatus
-            workerEnergy={1700}
+            workerEnergy={2000}
             workerEnergyMax={2000}
-            levelProgress={1300}
-            levelProgressMax={4000}
+            levelProgress={1500}
+            levelProgressMax={3000}
         />
     </div>
   );
