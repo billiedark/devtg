@@ -3,9 +3,11 @@ import './App.css';
 import { useEffect } from 'react';
 import { useTelegram } from './hooks/useTelegram';
 import Header from './components/Header/Header';
+
 import ProfileCard from './components/ProfileCard/ProfileCard';
 import avatarImg from './img/avatar.jpg';
 
+import RocketStatus from './components/RocketStatus/RocketStatus';
 
 function App() {
   const { tg, user } = useTelegram();
@@ -14,9 +16,6 @@ function App() {
     tg.ready();
   }, [])
 
-  const onClose = () => {
-    tg.close()
-  }
 
   return (
     <div className="App">
@@ -24,10 +23,17 @@ function App() {
 
       <ProfileCard
           avatar={avatarImg}
-          name="Владислав"
+          name={user?.first_name}
           level={7}
           balance={22000}
       />
+
+        <RocketStatus
+            workerEnergy={1700}
+            workerEnergyMax={2000}
+            levelProgress={1300}
+            levelProgressMax={4000}
+        />
     </div>
   );
 }

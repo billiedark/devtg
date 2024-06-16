@@ -5,9 +5,16 @@
 }
 
 body {
-  background: #000000;
-  color: #828282;
+  font-family: 'SF-Pro', sans-serif;
+  background-color: #000;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
+
 
 @font-face {
   font-family: 'SF Pro';

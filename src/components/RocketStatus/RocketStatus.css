@@ -1,0 +1,32 @@
+.rocket-status {
+    padding: 20px;
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    color: white;
+    margin-top: 20px;
+}
+
+.rocket-status h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.rocket-status p {
+    margin: 5px 0 20px;
+    font-size: 1em;
+    color: #aaaaaa;
+}
+
+.status-item {
+    margin-bottom: 15px;
+}
+
+.status-item span {
+    display: block;
+    font-size: 0.9em;
+}
+
+.status-item span:last-child {
+    margin-top: 5px;
+    font-weight: bold;
+}
