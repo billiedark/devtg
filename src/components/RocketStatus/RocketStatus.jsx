@@ -10,12 +10,12 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, levelProgress, levelProgr
             <div className="status-item">
                 <span>Энергия рабочих</span>
                 <span>{workerEnergy} из {workerEnergyMax} ⚡</span>
-                <ProgressBar value={workerEnergy} max={workerEnergyMax} color="green" />
+                <ProgressBar value={workerEnergy} max={workerEnergyMax} color="#27AE60" />
             </div>
             <div className="status-item">
                 <span>Прогресс уровня</span>
                 <span>{levelProgress} из {levelProgressMax} STAR</span>
-                <ProgressBar value={levelProgress} max={levelProgressMax} color="blue" />
+                <ProgressBar value={levelProgress} max={levelProgressMax} color="#2F80ED" />
             </div>
         </div>
     );
