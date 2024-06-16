@@ -52,11 +52,3 @@
     margin-top: 20px;
     width: 100%;
 }
-
-.gif-animation {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-    pointer-events: none; /* Чтобы клики проходили через .gif */
-}

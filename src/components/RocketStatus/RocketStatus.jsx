@@ -1,46 +1,34 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+
 import ProgressBar from '../ProgressBar/ProgressBar';
 import './RocketStatus.css';
 
 import rocketImg from '../../img/Rocket.png';
-import constructionGif from '../../img/building.gif';
-import constructionSound from '../../audio/builder.mp3';
 
-
-const RocketStatus = ({ workerEnergy, workerEnergyMax, levelProgress, levelProgressMax }) => {
+const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(levelProgress);
 
+    // Function to handle energy increase
+    const increaseEnergy = () => {
+        setEnergyNow(prevEnergy => Math.min(prevEnergy + workerEnergyPerSecond, workerEnergyMax));
+    };
+
+    // Use useEffect to start the interval when component mounts
+    useEffect(() => {
+        const energyInterval = setInterval(() => {
+            increaseEnergy();
+        }, 1000); // Every 1000ms (1 second)
+
+        // Clean up the interval on component unmount
+        return () => clearInterval(energyInterval);
+    }, []); // Empty dependency array ensures it runs only once on mount
+
     // Функция обработчика клика по изображени
-    const handleClick = (e) => {
+    const handleClick = () => {
         if (energyNow > 10) {
-            console.log(energyNow);
-            setEnergyNow(energyNow - 10);
+            setEnergyNow(energyNow - workerEnergyPerTap);
             setExpNow(expNow + 2)
-
-            // Создаем .gif анимацию
-            const gif = new Image();
-            gif.src = constructionGif;
-            gif.classList.add('gif-animation');
-
-            // Рассчитываем позицию .gif анимации относительно клика
-            const rect = e.currentTarget.getBoundingClientRect();
-            const offsetX = e.clientX - rect.left;
-            const offsetY = e.clientY - rect.top;
-
-            gif.style.left = `${offsetX}px`;
-            gif.style.top = `${offsetY}px`;
-
-            e.currentTarget.appendChild(gif);
-
-            // Воспроизводим звук
-            const audio = new Audio(constructionSound);
-            audio.play();
-
-            // Удаляем .gif и звук через некоторое время
-            setTimeout(() => {
-                gif.remove();
-            }, 750); // Предполагаемая длительность .gif анимации
         }
     };
 
