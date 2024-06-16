@@ -33,8 +33,8 @@ function App() {
         <RocketStatus
             workerEnergy={2000}
             workerEnergyMax={2000}
-            levelProgress={1500}
-            levelProgressMax={3000}
+            levelProgress={0}
+            levelProgressMax={500}
         />
     </div>
   );
