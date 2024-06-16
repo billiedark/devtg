@@ -9,6 +9,7 @@ import avatarImg from './img/avatar.jpg';
 
 import RocketStatus from './components/RocketStatus/RocketStatus';
 
+
 function App() {
   const { tg, user } = useTelegram();
 
@@ -16,6 +17,7 @@ function App() {
     tg.ready();
   }, [])
 
+    tg.expand();
 
   return (
     <div className="App">
