@@ -8,3 +8,10 @@ body {
   background: #000000;
   color: #828282;
 }
+
+@font-face {
+  font-family: 'SF Pro';
+  src: url('/fonts/SF-Pro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
