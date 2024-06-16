@@ -3,7 +3,7 @@ import './ProfileCard.css';
 import { truncate } from '../truncate';
 
 const ProfileCard = ({ avatar, name, level, balance }) => {
-    const truncatedName = truncate(name, 16);
+    const truncatedName = truncate(name, 20);
 
     return (
         <div className="profile-card">

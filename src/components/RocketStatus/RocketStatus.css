@@ -7,13 +7,13 @@
 
 .rocket-status h2 {
     margin: 0;
-    font-size: 1.5em;
+    font-size: 30px;
 }
 
 .rocket-status p {
     margin: 1px 0 20px;
     color: #828282;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 14px;
 }
 
@@ -30,3 +30,21 @@
     margin-top: 5px;
     font-weight: bold;
 }
+
+.status-item-block {
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.status-item-text-block {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.status-item-text-label {
+    color: #828282;
+    font-size: 14px;
+    height: 20px;
+}
+
