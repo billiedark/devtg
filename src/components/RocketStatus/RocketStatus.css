@@ -54,9 +54,6 @@
     transition: opacity 0.1s ease-in-out;
 }
 
-.rocket-image:active {
-    transform: scale(1.1);
-}
 .rocket-image.flash {
     opacity: 0.8;
 }
