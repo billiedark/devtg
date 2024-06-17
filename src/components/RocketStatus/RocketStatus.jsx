@@ -55,6 +55,15 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                 <ProgressBar id="exp-bar" value={expNow} max={levelProgressMax} color="#2F80ED" />
             </div>
 
+            <li>
+                Impact:
+                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('heavy');">heavy</a>, &nbsp;
+                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('light');">light</a>, &nbsp;
+                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('medium');">medium</a>, &nbsp;
+                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('rigid');">rigid</a>, &nbsp;
+                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('soft');">soft</a>
+            </li>
+
             <div className="rocket-image" onClick={handleClick}>
                 <img className="rocket-image" src={rocketImg} alt="Rocket" />
             </div>
