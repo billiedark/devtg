@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import './RocketStatus.css';
@@ -8,6 +8,8 @@ import rocketImg from '../../img/Rocket.png';
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(levelProgress);
+    const lastTapRef = useRef(0);
+    const rocketImageRef = useRef(null);
 
     // Function to handle energy increase
     const increaseEnergy = () => {
@@ -24,21 +26,43 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         return () => clearInterval(energyInterval);
     }, []); // Empty dependency array ensures it runs only once on mount
 
-    // Функция обработчика клика по изображени
+    // Rocket handler
     const handleClick = (event) => {
+        // Finger math pt.1 (Ignore double click)
+        const now = Date.now();
+        if (now - lastTapRef.current < 50) {
+            return;
+        }
+        lastTapRef.current = now;
+
+        // Disable scroll pt.1
         event.preventDefault();
 
         if (energyNow > 10) {
-            const touchCount = event.touches.length; // Количество пальцев
+            // Finger math pt.2
+            const touchCount = event.touches.length;
+
+            // Resources math
             setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
             setExpNow(expNow + (2 * touchCount));
 
+            // Haptic effect
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+            }
+
+            // Flash effect
+            const rocketImageElement = rocketImageRef.current;
+            if (rocketImageElement) {
+                rocketImageElement.classList.add('flash');
+                setTimeout(() => {
+                    rocketImageElement.classList.remove('flash');
+                }, 100);
             }
         }
     };
 
+    // Disable scroll pt.2
     useEffect(() => {
         const rocketImage = document.querySelector('.rocket-image');
 
@@ -73,7 +97,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             </div>
 
 
-            <div className="rocket-image" onTouchStart={handleClick}>
+            <div className="rocket-image" onTouchStart={handleClick} ref={rocketImageRef}>
                 <img className="rocket-image" src={rocketImg} alt="Rocket" />
             </div>
 
