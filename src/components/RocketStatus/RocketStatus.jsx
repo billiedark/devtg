@@ -29,6 +29,10 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         if (energyNow > 10) {
             setEnergyNow(energyNow - workerEnergyPerTap);
             setExpNow(expNow + 2)
+
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+            }
         }
     };
 
