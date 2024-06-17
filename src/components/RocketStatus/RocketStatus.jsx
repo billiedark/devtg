@@ -25,16 +25,29 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     }, []); // Empty dependency array ensures it runs only once on mount
 
     // Функция обработчика клика по изображени
-    const handleClick = () => {
+    const handleClick = (event) => {
+        event.preventDefault();
+
         if (energyNow > 10) {
-            setEnergyNow(energyNow - workerEnergyPerTap);
-            setExpNow(expNow + 2)
+            const touchCount = event.touches.length; // Количество пальцев
+            setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
+            setExpNow(expNow + (2 * touchCount));
 
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
             }
         }
     };
+
+    useEffect(() => {
+        const rocketImage = document.querySelector('.rocket-image');
+
+        rocketImage.addEventListener('touchstart', handleClick, { passive: false });
+
+        return () => {
+            rocketImage.removeEventListener('touchstart', handleClick);
+        };
+    }, [energyNow, expNow]);
 
     return (
         <div className="rocket-status">
@@ -59,16 +72,8 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                 <ProgressBar id="exp-bar" value={expNow} max={levelProgressMax} color="#2F80ED" />
             </div>
 
-            <li>
-                Impact:
-                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('heavy');">heavy</a>, &nbsp;
-                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('light');">light</a>, &nbsp;
-                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('medium');">medium</a>, &nbsp;
-                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('rigid');">rigid</a>, &nbsp;
-                <a href="javascript:Telegram.WebApp.HapticFeedback.impactOccurred('soft');">soft</a>
-            </li>
 
-            <div className="rocket-image" onClick={handleClick}>
+            <div className="rocket-image" onTouchStart={handleClick}>
                 <img className="rocket-image" src={rocketImg} alt="Rocket" />
             </div>
 
