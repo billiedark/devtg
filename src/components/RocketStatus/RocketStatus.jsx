@@ -4,12 +4,19 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 import './RocketStatus.css';
 
 import rocketImg from '../../img/Rocket.png';
+import ProfileCard from "../ProfileCard/ProfileCard";
+import {useTelegram} from "../../hooks/useTelegram";
+import avatarImg from "../../img/avatar.png";
 
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(levelProgress);
     const lastTapRef = useRef(0);
     const rocketImageRef = useRef(null);
+
+    // Header
+    const { tg, user } = useTelegram();
+    const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
 
     // Function to handle energy increase
     const increaseEnergy = () => {
@@ -73,8 +80,37 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         };
     }, [energyNow, expNow]);
 
+    // Profile photo handler
+    useEffect(() => {
+        const checkImage = (url) => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        };
+
+        const verifyAvatarUrl = async () => {
+            const isValid = await checkImage(avatarUrl);
+            if (!isValid) {
+                setAvatarUrl(avatarImg);
+            }
+        };
+
+        verifyAvatarUrl();
+    }, [avatarUrl]);
+
     return (
         <div className="rocket-status">
+            <ProfileCard
+                avatar={avatarUrl}
+                name={user?.first_name}
+                //name="chief baccaraaa"
+                level={1}
+                balance={expNow}
+            />
+
             <h2>Постройка ракеты</h2>
             <p>Улучшайте ракету для успешных полетов</p>
 

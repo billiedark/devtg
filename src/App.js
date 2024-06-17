@@ -11,27 +11,6 @@ const isDev = true;
 
 function App() {
   const { tg, user } = useTelegram();
-  const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
-
-  useEffect(() => {
-    const checkImage = (url) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-      });
-    };
-
-    const verifyAvatarUrl = async () => {
-      const isValid = await checkImage(avatarUrl);
-      if (!isValid) {
-        setAvatarUrl(avatarImg);
-      }
-    };
-
-    verifyAvatarUrl();
-  }, [avatarUrl]);
 
   useEffect(() => {
     tg.ready();
@@ -42,21 +21,13 @@ function App() {
   return (
     <div className="App">
 
-      <ProfileCard
-          avatar={avatarUrl}
-          name={user?.first_name}
-          //name="chief baccaraaa"
-          level={1}
-          balance={1500}
-      />
-
         <RocketStatus
             workerEnergy={2000}
             workerEnergyMax={2000}
             workerEnergyPerTap={10}
             workerEnergyPerSecond={5}
-            levelProgress={0}
-            levelProgressMax={500}
+            levelProgress={5000}
+            levelProgressMax={5500}
         />
     </div>
   );

@@ -6,6 +6,8 @@
     border-radius: 10px;
     color: #fff; /* Белый цвет текста */
     font-family: 'SF Pro', sans-serif; /* Применение кастомного шрифта */
+    margin-bottom: 20px;
+    margin-top: -20px;
 }
 
 .avatar {
