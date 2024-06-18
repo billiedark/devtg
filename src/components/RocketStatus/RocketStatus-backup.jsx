@@ -5,7 +5,7 @@ import ProfileCard from "../ProfileCard/ProfileCard";
 import Button from "../Button/Button";
 import './RocketStatus.css';
 
-import rocketVideo from '../../img/rocket-gif.mp4';
+import rocketImg from '../../img/Rocket.png';
 import avatarImg from "../../img/avatar.png";
 
 import {useTelegram} from "../../hooks/useTelegram";
@@ -14,7 +14,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(levelProgress);
     const lastTapRef = useRef(0);
-    const rocketVideoRef = useRef(null);
+    const rocketImageRef = useRef(null);
 
     // Header
     const { tg, user } = useTelegram();
@@ -60,25 +60,25 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
             }
 
-            // Speed up video
-            const rocketVideoElement = rocketVideoRef.current;
-            if (rocketVideoElement) {
-                rocketVideoElement.playbackRate += 0.5;
+            // Flash effect
+            const rocketImageElement = rocketImageRef.current;
+            if (rocketImageElement) {
+                rocketImageElement.classList.add('flash');
                 setTimeout(() => {
-                    rocketVideoElement.playbackRate -= 0.5;
-                }, 1000); // Return to normal speed after 1 second
+                    rocketImageElement.classList.remove('flash');
+                }, 100);
             }
         }
     };
 
     // Disable scroll pt.2
     useEffect(() => {
-        const rocketVideo = document.querySelector('.rocket-video');
+        const rocketImage = document.querySelector('.rocket-image');
 
-        rocketVideo.addEventListener('touchstart', handleClick, { passive: false });
+        rocketImage.addEventListener('touchstart', handleClick, { passive: false });
 
         return () => {
-            rocketVideo.removeEventListener('touchstart', handleClick);
+            rocketImage.removeEventListener('touchstart', handleClick);
         };
     }, [energyNow, expNow]);
 
@@ -107,8 +107,8 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         <div className="rocket-status">
             <ProfileCard
                 avatar={avatarUrl}
-                name={user?.first_name}
-                //name="chief baccaraaa"
+                //name={user?.first_name}
+                name="chief baccaraaa"
                 level={1}
                 balance={expNow}
             />
@@ -134,9 +134,11 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                 <ProgressBar id="exp-bar" value={expNow} max={levelProgressMax} color="#2F80ED" />
             </div>
 
-            <div className="rocket-video-container">
-                <video className="rocket-video" ref={rocketVideoRef} src={rocketVideo} autoPlay loop muted />
+
+            <div className="rocket-image" onTouchStart={handleClick} ref={rocketImageRef}>
+                <img className="rocket-image" src={rocketImg} alt="Rocket" />
             </div>
+
 
         </div>
     );

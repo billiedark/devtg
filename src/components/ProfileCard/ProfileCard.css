@@ -5,7 +5,6 @@
     padding: 5px;
     border-radius: 10px;
     color: #fff; /* Белый цвет текста */
-    font-family: 'SF Pro', sans-serif; /* Применение кастомного шрифта */
     margin-bottom: 20px;
     margin-top: -20px;
 }
@@ -23,20 +22,24 @@
 
 .name {
     font-size: 17px;
+    font-weight: 500;
 }
 
 .level {
     color: #828282; /* Светло-серый цвет для уровня */
     font-size: 14px;
+    font-weight: 200;
 }
 
 .balance {
     text-align: right;
     color: #007bff; /* Синий цвет для баланса */
     font-size: 17px;
+    font-weight: 600;
 }
 
 .balance-text {
     color: #828282; /* Светло-серый цвет для подписи "Баланс" */
     font-size: 14px;
+    font-weight: 200;
 }
