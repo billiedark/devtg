@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import ProfileCard from "../ProfileCard/ProfileCard";
@@ -8,7 +8,7 @@ import './RocketStatus.css';
 import rocketVideo from '../../img/rocket-gif.mp4';
 import avatarImg from "../../img/avatar.png";
 
-import {useTelegram} from "../../hooks/useTelegram";
+import { useTelegram } from "../../hooks/useTelegram";
 
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
@@ -73,12 +73,22 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
     // Disable scroll pt.2
     useEffect(() => {
-        const rocketVideo = document.querySelector('.rocket-video');
+        const rocketVideo = rocketVideoRef.current;
 
         rocketVideo.addEventListener('touchstart', handleClick, { passive: false });
 
+        // Ensure video starts playing on user interaction
+        const playVideoOnInteraction = () => {
+            if (rocketVideo.paused) {
+                rocketVideo.play();
+            }
+        };
+
+        rocketVideo.addEventListener('play', playVideoOnInteraction);
+
         return () => {
             rocketVideo.removeEventListener('touchstart', handleClick);
+            rocketVideo.removeEventListener('play', playVideoOnInteraction);
         };
     }, [energyNow, expNow]);
 
@@ -107,8 +117,8 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         <div className="rocket-status">
             <ProfileCard
                 avatar={avatarUrl}
-                name={user?.first_name}
-                //name="chief baccaraaa"
+                //name={user?.first_name}
+                name="chief baccaraaa"
                 level={1}
                 balance={expNow}
             />
@@ -119,7 +129,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Энергия рабочих</span>
-                    <span id="energy" className="status-item-text-label status-item-with-emoji">{energyNow} из {workerEnergyMax} ⚡</span>
+                    <span id="energy" className="status-item-text-label">{energyNow} из {workerEnergyMax} ⚡</span>
                 </div>
 
                 <ProgressBar id="energy-bar" value={energyNow} max={workerEnergyMax} color="#27AE60" />
@@ -135,7 +145,15 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             </div>
 
             <div className="rocket-video-container">
-                <video className="rocket-video" ref={rocketVideoRef} src={rocketVideo} autoPlay loop muted />
+                <video
+                    className="rocket-video"
+                    ref={rocketVideoRef}
+                    src={rocketVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                />
             </div>
 
         </div>
