@@ -117,8 +117,8 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         <div className="rocket-status">
             <ProfileCard
                 avatar={avatarUrl}
-                //name={user?.first_name}
-                name="chief baccaraaa"
+                name={user?.first_name}
+                //name="chief baccaraaa"
                 level={1}
                 balance={expNow}
             />
