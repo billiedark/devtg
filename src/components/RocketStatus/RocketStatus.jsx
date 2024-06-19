@@ -127,7 +127,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Энергия рабочих</span>
-                    <span id="energy" className="status-item-text-label status-item-with-emoji">{energyNow} из {workerEnergyMax} ⚡</span>
+                    <span id="energy" className="status-item-text-label">{energyNow} из {workerEnergyMax} ⚡</span>
                 </div>
 
                 <ProgressBar id="energy-bar" value={energyNow} max={workerEnergyMax} color="#27AE60" />
