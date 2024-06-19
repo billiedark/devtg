@@ -1,14 +1,15 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import ProfileCard from "../ProfileCard/ProfileCard";
 import Button from "../Button/Button";
 import './RocketStatus.css';
 
-import rocketVideo from '../../img/rocket-gif.mp4';
+import rocketVideoMp4 from '../../img/rocket-gif.mp4';
+import rocketVideoWebm from '../../img/rocket-gif.webm';
 import avatarImg from "../../img/avatar.png";
 
-import {useTelegram} from "../../hooks/useTelegram";
+import { useTelegram } from "../../hooks/useTelegram";
 
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
@@ -16,7 +17,6 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     const lastTapRef = useRef(0);
     const rocketVideoRef = useRef(null);
     const [floatingText, setFloatingText] = useState([]);
-
 
     // Header
     const { tg, user } = useTelegram();
@@ -143,7 +143,11 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             </div>
 
             <div className="rocket-video-container">
-                <video className="rocket-video" ref={rocketVideoRef} src={rocketVideo} autoPlay loop muted />
+                <video className="rocket-video" ref={rocketVideoRef} autoPlay loop muted playsInline>
+                    <source src={rocketVideoMp4} type="video/mp4" />
+                    <source src={rocketVideoWebm} type="video/webm" />
+                    Your browser does not support the video tag.
+                </video>
             </div>
 
             {floatingText.map(text => (
