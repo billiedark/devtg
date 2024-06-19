@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import ProfileCard from "../ProfileCard/ProfileCard";
@@ -8,13 +8,15 @@ import './RocketStatus.css';
 import rocketVideo from '../../img/rocket-gif.mp4';
 import avatarImg from "../../img/avatar.png";
 
-import { useTelegram } from "../../hooks/useTelegram";
+import {useTelegram} from "../../hooks/useTelegram";
 
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(levelProgress);
     const lastTapRef = useRef(0);
     const rocketVideoRef = useRef(null);
+    const [floatingText, setFloatingText] = useState([]);
+
 
     // Header
     const { tg, user } = useTelegram();
@@ -35,6 +37,16 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         return () => clearInterval(energyInterval);
     }, []); // Empty dependency array ensures it runs only once on mount
 
+    // Function to add floating text
+    const addFloatingText = (x, y) => {
+        const id = Date.now();
+        setFloatingText(prev => [...prev, { id, x, y }]);
+
+        setTimeout(() => {
+            setFloatingText(prev => prev.filter(item => item.id !== id));
+        }, 1000); // Remove after 1 second
+    };
+
     // Rocket handler
     const handleClick = (event) => {
         // Finger math pt.1 (Ignore double click)
@@ -53,42 +65,28 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
             // Resources math
             setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
-            setExpNow(expNow + (2 * touchCount));
+            setExpNow(expNow + (workerEnergyPerTap * touchCount));
 
             // Haptic effect
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
             }
 
-            // Speed up video
-            const rocketVideoElement = rocketVideoRef.current;
-            if (rocketVideoElement) {
-                rocketVideoElement.playbackRate += 0.5;
-                setTimeout(() => {
-                    rocketVideoElement.playbackRate -= 0.5;
-                }, 1000); // Return to normal speed after 1 second
-            }
+            // Add floating text
+            const x = event.touches[0].clientX;
+            const y = event.touches[0].clientY;
+            addFloatingText(x, y);
         }
     };
 
     // Disable scroll pt.2
     useEffect(() => {
-        const rocketVideo = rocketVideoRef.current;
+        const rocketVideo = document.querySelector('.rocket-video');
 
         rocketVideo.addEventListener('touchstart', handleClick, { passive: false });
 
-        // Ensure video starts playing on user interaction
-        const playVideoOnInteraction = () => {
-            if (rocketVideo.paused) {
-                rocketVideo.play();
-            }
-        };
-
-        rocketVideo.addEventListener('play', playVideoOnInteraction);
-
         return () => {
             rocketVideo.removeEventListener('touchstart', handleClick);
-            rocketVideo.removeEventListener('play', playVideoOnInteraction);
         };
     }, [energyNow, expNow]);
 
@@ -129,7 +127,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Энергия рабочих</span>
-                    <span id="energy" className="status-item-text-label">{energyNow} из {workerEnergyMax} ⚡</span>
+                    <span id="energy" className="status-item-text-label status-item-with-emoji">{energyNow} из {workerEnergyMax} ⚡</span>
                 </div>
 
                 <ProgressBar id="energy-bar" value={energyNow} max={workerEnergyMax} color="#27AE60" />
@@ -145,17 +143,18 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             </div>
 
             <div className="rocket-video-container">
-                <video
-                    className="rocket-video"
-                    ref={rocketVideoRef}
-                    src={rocketVideo}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                />
+                <video className="rocket-video" ref={rocketVideoRef} src={rocketVideo} autoPlay loop muted />
             </div>
 
+            {floatingText.map(text => (
+                <div
+                    key={text.id}
+                    className="floating-text"
+                    style={{ left: text.x, top: text.y }}
+                >
+                    +{workerEnergyPerTap}
+                </div>
+            ))}
         </div>
     );
 }

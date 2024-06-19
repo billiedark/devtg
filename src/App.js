@@ -24,10 +24,10 @@ function App() {
         <RocketStatus
             workerEnergy={2000}
             workerEnergyMax={2000}
-            workerEnergyPerTap={10}
-            workerEnergyPerSecond={5}
+            workerEnergyPerTap={1}
+            workerEnergyPerSecond={1}
             levelProgress={5000}
-            levelProgressMax={5500}
+            levelProgressMax={6000}
         />
     </div>
   );

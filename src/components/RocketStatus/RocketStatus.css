@@ -3,6 +3,7 @@
     border-radius: 10px;
     color: white;
     margin-top: 20px;
+    position: relative; /* Add position relative to contain floating text */
 }
 
 .rocket-status h2 {
@@ -18,7 +19,7 @@
     font-size: 19px;
     text-align: center;
     width: 310px;
-    line-height: 15px;
+    line-height: 14px;
 }
 
 .status-item {
@@ -75,4 +76,24 @@
     height: 30px;
     margin-top: 5px;
     font-weight: 300;
+}
+
+.status-item-with-emoji {
+    margin-top: 6px;
+}
+
+/* Floating text style */
+.floating-text {
+    position: absolute;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes floatUp {
+    to {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
 }
