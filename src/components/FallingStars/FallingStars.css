@@ -12,3 +12,12 @@
     height: 30px;
     transition: top 0.03s linear;
 }
+
+.rocket {
+    position: absolute;
+    width: 190px;
+    height: 318px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

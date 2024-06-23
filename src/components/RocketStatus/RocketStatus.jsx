@@ -110,7 +110,38 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                 <ProgressBar id="exp-bar" value={expNow} max={levelProgressNext} color="#2F80ED" />
             </div>
 
-            <FallingStars />
+            <FallingStars
+                onTap={(event) => {
+                    // Finger math pt.1 (Ignore double click)
+                    const now = Date.now();
+                    if (now - lastTapRef.current < 50) {
+                        return;
+                    }
+                    lastTapRef.current = now;
+
+                    // Disable scroll pt.1
+                    event.preventDefault();
+
+                    if (energyNow > 10) {
+                        // Finger math pt.2
+                        const touchCount = event.touches ? event.touches.length : 1;
+
+                        // Resources math
+                        setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
+                        setExpNow(expNow + (workerEnergyPerTap * touchCount));
+
+                        // Haptic effect
+                        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                            window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                        }
+
+                        // Add floating text
+                        const x = event.touches ? event.touches[0].clientX : event.clientX;
+                        const y = event.touches ? event.touches[0].clientY : event.clientY;
+                        addFloatingText(x, y);
+                    }
+                }}
+            />
 
             {floatingText.map(text => (
                 <div
