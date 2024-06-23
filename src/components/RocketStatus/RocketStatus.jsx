@@ -4,21 +4,16 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 import ProfileCard from "../ProfileCard/ProfileCard";
 import Button from "../Button/Button";
 import './RocketStatus.css';
+import FallingStars from '../FallingStars/FallingStars';
 
-import rocketVideoMp4 from '../../img/rocket-gif.mp4';
-import rocketVideoWebm from '../../img/rocket-gif.webm';
 import avatarImg from "../../img/avatar.png";
-
 import { useTelegram } from "../../hooks/useTelegram";
 
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext, isDev }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(1);
     const lastTapRef = useRef(0);
-    const rocketVideoRef = useRef(null);
     const [floatingText, setFloatingText] = useState([]);
-    const [videoSpeed, setVideoSpeed] = useState(1);
-    const speedTimeoutRef = useRef(null);
     let username = 'loading..'
 
     // Header
@@ -56,70 +51,6 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         }, 1000); // Remove after 1 second
     };
 
-    // Rocket handler
-    const handleClick = (event) => {
-        // Finger math pt.1 (Ignore double click)
-        const now = Date.now();
-        if (now - lastTapRef.current < 50) {
-            return;
-        }
-        lastTapRef.current = now;
-
-        // Disable scroll pt.1
-        event.preventDefault();
-
-        if (energyNow > 10) {
-            // Finger math pt.2
-            const touchCount = event.touches.length;
-
-            // Resources math
-            setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
-            setExpNow(expNow + (workerEnergyPerTap * touchCount));
-
-            // Haptic effect
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-            }
-
-            // Add floating text
-            const x = event.touches[0].clientX;
-            const y = event.touches[0].clientY;
-            addFloatingText(x, y);
-
-            // Speed up video using requestAnimationFrame
-            if (speedTimeoutRef.current) {
-                clearTimeout(speedTimeoutRef.current);
-            }
-
-            setVideoSpeed(prevSpeed => Math.min(prevSpeed * 1.3, 6)); // Max speed is 6x
-
-            speedTimeoutRef.current = setTimeout(() => {
-                setVideoSpeed(1);
-            }, 1000);
-        }
-    };
-
-    // Update video speed with requestAnimationFrame
-    useEffect(() => {
-        const updateSpeed = () => {
-            if (rocketVideoRef.current) {
-                rocketVideoRef.current.playbackRate = videoSpeed;
-            }
-        };
-        requestAnimationFrame(updateSpeed);
-    }, [videoSpeed]);
-
-    // Disable scroll pt.2
-    useEffect(() => {
-        const rocketVideo = document.querySelector('.rocket-video');
-
-        rocketVideo.addEventListener('touchstart', handleClick, { passive: false });
-
-        return () => {
-            rocketVideo.removeEventListener('touchstart', handleClick);
-        };
-    }, [energyNow, expNow]);
-
     // Profile photo handler
     useEffect(() => {
         const checkImage = (url) => {
@@ -148,6 +79,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         }
     }, [balance]);
 
+
     return (
         <div className="rocket-status">
             <ProfileCard
@@ -158,7 +90,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             />
 
             <h2>Путешествие</h2>
-            <p>Нажимайте на ракету, чтобы отправить ее дальше от земли для исследования космоса</p>
+            <p>Нажимайте на полотно, чтобы ускорить звезды</p>
 
             <div className="status-item-block">
                 <div className="status-item-text-block">
@@ -178,13 +110,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                 <ProgressBar id="exp-bar" value={expNow} max={levelProgressNext} color="#2F80ED" />
             </div>
 
-            <div className="rocket-video-container">
-                <video className="rocket-video" ref={rocketVideoRef} autoPlay loop muted playsInline>
-                    <source src={rocketVideoMp4} type="video/mp4" />
-                    <source src={rocketVideoWebm} type="video/webm" />
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+            <FallingStars />
 
             {floatingText.map(text => (
                 <div
