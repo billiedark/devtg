@@ -11,9 +11,9 @@ import avatarImg from "../../img/avatar.png";
 
 import { useTelegram } from "../../hooks/useTelegram";
 
-const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
+const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
-    const [expNow, setExpNow] = useState(levelProgress);
+    const [expNow, setExpNow] = useState(1);
     const lastTapRef = useRef(0);
     const rocketVideoRef = useRef(null);
     const [floatingText, setFloatingText] = useState([]);
@@ -29,6 +29,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
     // Use useEffect to start the interval when component mounts
     useEffect(() => {
+
         const energyInterval = setInterval(() => {
             increaseEnergy();
         }, 1000); // Every 1000ms (1 second)
@@ -93,6 +94,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     // Profile photo handler
     useEffect(() => {
         const checkImage = (url) => {
+
             return new Promise((resolve) => {
                 const img = new Image();
                 img.onload = () => resolve(true);
@@ -111,13 +113,21 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         verifyAvatarUrl();
     }, [avatarUrl]);
 
+    // Update Balance
+    useEffect(() => {
+        if (balance !== undefined && !isNaN(balance)) {
+            setExpNow(Number(balance));
+        }
+    }, [balance]);
+
+
     return (
         <div className="rocket-status">
             <ProfileCard
                 avatar={avatarUrl}
-                name={user?.first_name}
-                //name="chief baccaraaa"
-                level={1}
+                //name={user?.first_name}
+                name="chief baccaraaa"
+                level={level}
                 balance={expNow}
             />
 
@@ -136,10 +146,10 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Прогресс уровня</span>
-                    <span id="exp" className="status-item-text-label">{expNow} из {levelProgressMax} STAR</span>
+                    <span id="exp" className="status-item-text-label">{expNow} из {levelProgressNext} STAR</span>
                 </div>
 
-                <ProgressBar id="exp-bar" value={expNow} max={levelProgressMax} color="#2F80ED" />
+                <ProgressBar id="exp-bar" value={expNow} max={levelProgressNext} color="#2F80ED" />
             </div>
 
             <div className="rocket-video-container">
