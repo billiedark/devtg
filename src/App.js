@@ -32,6 +32,7 @@ function App({ userInfo }) {
             balance={userBalance}
             level={userLevel}
             levelProgressNext={6000}
+            isDev={isDev}
         />
     </div>
     );

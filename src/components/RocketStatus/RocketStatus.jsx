@@ -11,16 +11,23 @@ import avatarImg from "../../img/avatar.png";
 
 import { useTelegram } from "../../hooks/useTelegram";
 
-const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext }) => {
+const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext, isDev }) => {
     const [energyNow, setEnergyNow] = useState(workerEnergy);
     const [expNow, setExpNow] = useState(1);
     const lastTapRef = useRef(0);
     const rocketVideoRef = useRef(null);
     const [floatingText, setFloatingText] = useState([]);
+    let username = "a"
 
     // Header
     const { tg, user } = useTelegram();
     const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
+
+    // Name generation
+    if (isDev)
+        username = "chief baccaraaa";
+    else
+        username = user?.first_name;
 
     // Function to handle energy increase
     const increaseEnergy = () => {
@@ -125,8 +132,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         <div className="rocket-status">
             <ProfileCard
                 avatar={avatarUrl}
-                //name={user?.first_name}
-                name="chief baccaraaa"
+                name={username}
                 level={level}
                 balance={expNow}
             />
