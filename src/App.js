@@ -5,7 +5,7 @@ import { useTelegram } from './hooks/useTelegram';
 import avatarImg from './img/avatar.png';
 import RocketStatus from './components/RocketStatus/RocketStatus';
 
-const isDev = true;
+const isDev = false;
 
 function App({ userInfo }) {
     const { tg, user } = useTelegram();

@@ -17,7 +17,9 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     const lastTapRef = useRef(0);
     const rocketVideoRef = useRef(null);
     const [floatingText, setFloatingText] = useState([]);
-    let username = "a"
+    const [videoSpeed, setVideoSpeed] = useState(1);
+    const speedTimeoutRef = useRef(null);
+    let username = 'loading..'
 
     // Header
     const { tg, user } = useTelegram();
@@ -36,7 +38,6 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
     // Use useEffect to start the interval when component mounts
     useEffect(() => {
-
         const energyInterval = setInterval(() => {
             increaseEnergy();
         }, 1000); // Every 1000ms (1 second)
@@ -84,8 +85,28 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             const x = event.touches[0].clientX;
             const y = event.touches[0].clientY;
             addFloatingText(x, y);
+
+            // Speed up video
+            setVideoSpeed(prevSpeed => Math.min(prevSpeed * 1.3, 6)); // Max speed is 16x
+
+            // Clear the existing timeout if there's one
+            if (speedTimeoutRef.current) {
+                clearTimeout(speedTimeoutRef.current);
+            }
+
+            // Set a new timeout to reset speed after 2 seconds
+            speedTimeoutRef.current = setTimeout(() => {
+                setVideoSpeed(1);
+            }, 1000);
         }
     };
+
+    // Update video speed
+    useEffect(() => {
+        if (rocketVideoRef.current) {
+            rocketVideoRef.current.playbackRate = videoSpeed;
+        }
+    }, [videoSpeed]);
 
     // Disable scroll pt.2
     useEffect(() => {
@@ -101,7 +122,6 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     // Profile photo handler
     useEffect(() => {
         const checkImage = (url) => {
-
             return new Promise((resolve) => {
                 const img = new Image();
                 img.onload = () => resolve(true);
