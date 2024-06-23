@@ -86,26 +86,27 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             const y = event.touches[0].clientY;
             addFloatingText(x, y);
 
-            // Speed up video
-            setVideoSpeed(prevSpeed => Math.min(prevSpeed * 1.3, 6)); // Max speed is 16x
-
-            // Clear the existing timeout if there's one
+            // Speed up video using requestAnimationFrame
             if (speedTimeoutRef.current) {
                 clearTimeout(speedTimeoutRef.current);
             }
 
-            // Set a new timeout to reset speed after 2 seconds
+            setVideoSpeed(prevSpeed => Math.min(prevSpeed * 1.3, 6)); // Max speed is 6x
+
             speedTimeoutRef.current = setTimeout(() => {
                 setVideoSpeed(1);
             }, 1000);
         }
     };
 
-    // Update video speed
+    // Update video speed with requestAnimationFrame
     useEffect(() => {
-        if (rocketVideoRef.current) {
-            rocketVideoRef.current.playbackRate = videoSpeed;
-        }
+        const updateSpeed = () => {
+            if (rocketVideoRef.current) {
+                rocketVideoRef.current.playbackRate = videoSpeed;
+            }
+        };
+        requestAnimationFrame(updateSpeed);
     }, [videoSpeed]);
 
     // Disable scroll pt.2
@@ -146,7 +147,6 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             setExpNow(Number(balance));
         }
     }, [balance]);
-
 
     return (
         <div className="rocket-status">
