@@ -17,7 +17,7 @@ const FallingStars = ({ onTap }) => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            const canvasWidth = 390;
+            const canvasWidth = window.innerWidth;
             const star = {
                 id: Date.now(),
                 src: starImages[Math.floor(Math.random() * starImages.length)],
@@ -33,7 +33,8 @@ const FallingStars = ({ onTap }) => {
     }, []);
 
     useEffect(() => {
-        const handleClick = (event) => {
+        const handleTouchStart = (event) => {
+            event.preventDefault(); // Запрещаем скроллинг
             setSpeed(3);
 
             if (speedTimeoutRef.current) {
@@ -49,11 +50,17 @@ const FallingStars = ({ onTap }) => {
             }
         };
 
+        const handleTouchMove = (event) => {
+            event.preventDefault(); // Запрещаем скроллинг
+        };
+
         const canvas = canvasRef.current;
-        canvas.addEventListener('click', handleClick);
+        canvas.addEventListener('touchstart', handleTouchStart);
+        canvas.addEventListener('touchmove', handleTouchMove);
 
         return () => {
-            canvas.removeEventListener('click', handleClick);
+            canvas.removeEventListener('touchstart', handleTouchStart);
+            canvas.removeEventListener('touchmove', handleTouchMove);
         };
     }, [onTap]);
 
