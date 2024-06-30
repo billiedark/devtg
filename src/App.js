@@ -17,18 +17,20 @@ function App({ userInfo }) {
 
 
     console.log(userInfo)
-    const userLevel = userInfo ? userInfo['level'] : 1;
-    const userBalance = userInfo ? userInfo['balance'] : 1;
-    const ratePerClick = userInfo ? userInfo['rpc'] : 1;
+    const userLevel = userInfo ? userInfo['level'] : 0;
+    const userBalance = userInfo ? userInfo['balance'] : 0;
+    const ratePerClick = userInfo ? userInfo['rpc'] : 0;
+    const energy = userInfo ? userInfo['energy'] : 0;
+    const energyPerSecond = userInfo ? userInfo['eps'] : 0;
 
     return (
     <div className="App">
 
         <RocketStatus
-            workerEnergy={2000}
+            workerEnergy={energy}
             workerEnergyMax={2000}
             workerEnergyPerTap={ratePerClick}
-            workerEnergyPerSecond={1}
+            workerEnergyPerSecond={energyPerSecond}
             balance={userBalance}
             level={userLevel}
             levelProgressNext={6000}

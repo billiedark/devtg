@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import ProfileCard from "../ProfileCard/ProfileCard";
@@ -15,6 +16,9 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     const lastTapRef = useRef(0);
     const [floatingText, setFloatingText] = useState([]);
     let username = 'loading..'
+
+    const [clicks, setClicks] = useState(0);
+    const clickTimeoutRef = useRef(null);
 
     // Header
     const { tg, user } = useTelegram();
@@ -79,6 +83,18 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         }
     }, [balance]);
 
+    useEffect(() => {
+        if (workerEnergy !== undefined && !isNaN(workerEnergy)) {
+            setEnergyNow(Number(workerEnergy));
+        }
+    }, [workerEnergy]);
+
+    useEffect(() => {
+        if (workerEnergy !== undefined && !isNaN(workerEnergy)) {
+            setEnergyNow(Number(workerEnergy));
+        }
+    }, [workerEnergy]);
+
 
     return (
         <div className="rocket-status">
@@ -139,6 +155,26 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                         const x = event.touches ? event.touches[0].clientX : event.clientX;
                         const y = event.touches ? event.touches[0].clientY : event.clientY;
                         addFloatingText(x, y);
+
+                        setClicks(prevClicks => prevClicks + 1);
+
+                        if (clickTimeoutRef.current) {
+                            clearTimeout(clickTimeoutRef.current);
+                        }
+
+                        clickTimeoutRef.current = setTimeout(() => {
+                            axios.post('https://dbd20rank.net/api/stars/user/update', {
+                                user_id: "209811551",
+                                clicks: clicks + 1,
+                            })
+                                .then(response => {
+                                    console.log(response.data);
+                                    setClicks(0);
+                                })
+                                .catch(error => {
+                                    console.error('Error updating user stars', error);
+                                });
+                        }, 1000);
                     }
                 }}
             />
