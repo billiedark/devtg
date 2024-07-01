@@ -8,7 +8,7 @@
     align-items: center;
     padding: 0;
     position: fixed;
-    height: 75px;
+    height: 85px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -26,7 +26,7 @@
 
 .menu-item {
     width: 75px;
-    height: 75px;
+    height: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,7 +56,7 @@
 
 .active-line {
     position: absolute;
-    bottom: 0;
+    bottom: 83px;
     width: 20%;
     height: 2px;
     background: #2f80ed;
