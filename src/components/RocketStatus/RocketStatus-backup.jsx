@@ -1,24 +1,31 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
 import ProfileCard from "../ProfileCard/ProfileCard";
 import Button from "../Button/Button";
 import './RocketStatus.css';
+import FallingStars from '../FallingStars/FallingStars';
 
-import rocketImg from '../../img/Rocket.png';
 import avatarImg from "../../img/avatar.png";
+import { useTelegram } from "../../hooks/useTelegram";
 
-import {useTelegram} from "../../hooks/useTelegram";
-
-const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, levelProgress, levelProgressMax }) => {
-    const [energyNow, setEnergyNow] = useState(workerEnergy);
-    const [expNow, setExpNow] = useState(levelProgress);
+const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext, isDev }) => {
+    const [energyNow, setEnergyNow] = useState(null);
+    const [expNow, setExpNow] = useState(1);
     const lastTapRef = useRef(0);
-    const rocketImageRef = useRef(null);
+    const [floatingText, setFloatingText] = useState([]);
+
+    const [clicks, setClicks] = useState(0);
+    const clickTimeoutRef = useRef(null);
 
     // Header
     const { tg, user } = useTelegram();
     const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
+    const user_id = isDev ? '209811551' : user?.id;
+
+    // Name generation
+    const username = isDev ? 'chief bacccaraaa' : user?.first_name;
 
     // Function to handle energy increase
     const increaseEnergy = () => {
@@ -35,52 +42,15 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         return () => clearInterval(energyInterval);
     }, []); // Empty dependency array ensures it runs only once on mount
 
-    // Rocket handler
-    const handleClick = (event) => {
-        // Finger math pt.1 (Ignore double click)
-        const now = Date.now();
-        if (now - lastTapRef.current < 50) {
-            return;
-        }
-        lastTapRef.current = now;
+    // Function to add floating text
+    const addFloatingText = (x, y) => {
+        const id = Date.now();
+        setFloatingText(prev => [...prev, { id, x, y }]);
 
-        // Disable scroll pt.1
-        event.preventDefault();
-
-        if (energyNow > 10) {
-            // Finger math pt.2
-            const touchCount = event.touches.length;
-
-            // Resources math
-            setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
-            setExpNow(expNow + (2 * touchCount));
-
-            // Haptic effect
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
-            }
-
-            // Flash effect
-            const rocketImageElement = rocketImageRef.current;
-            if (rocketImageElement) {
-                rocketImageElement.classList.add('flash');
-                setTimeout(() => {
-                    rocketImageElement.classList.remove('flash');
-                }, 100);
-            }
-        }
+        setTimeout(() => {
+            setFloatingText(prev => prev.filter(item => item.id !== id));
+        }, 1000); // Remove after 1 second
     };
-
-    // Disable scroll pt.2
-    useEffect(() => {
-        const rocketImage = document.querySelector('.rocket-image');
-
-        rocketImage.addEventListener('touchstart', handleClick, { passive: false });
-
-        return () => {
-            rocketImage.removeEventListener('touchstart', handleClick);
-        };
-    }, [energyNow, expNow]);
 
     // Profile photo handler
     useEffect(() => {
@@ -103,23 +73,37 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         verifyAvatarUrl();
     }, [avatarUrl]);
 
+
+    // Update DB data
+    useEffect(() => {
+        if (balance !== undefined && !isNaN(balance)) {
+            setExpNow(Number(balance));
+        }
+    }, [balance]);
+
+    useEffect(() => {
+        if (workerEnergy !== undefined && !isNaN(workerEnergy)) {
+            setEnergyNow(Number(workerEnergy));
+        }
+    }, [workerEnergy]);
+
+
     return (
         <div className="rocket-status">
             <ProfileCard
                 avatar={avatarUrl}
-                //name={user?.first_name}
-                name="chief baccaraaa"
-                level={1}
+                name={username}
+                level={level}
                 balance={expNow}
             />
 
             <h2>Путешествие</h2>
-            <p>Нажимайте на ракету, чтобы отправить ее дальше от земли для исследования космоса</p>
+            <p>Нажимайте на полотно, чтобы ускорить звезды</p>
 
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Энергия рабочих</span>
-                    <span id="energy" className="status-item-text-label status-item-with-emoji">{energyNow} из {workerEnergyMax} ⚡</span>
+                    <span id="energy" className="status-item-text-label">{energyNow} из {workerEnergyMax} ⚡</span>
                 </div>
 
                 <ProgressBar id="energy-bar" value={energyNow} max={workerEnergyMax} color="#27AE60" />
@@ -128,18 +112,74 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Прогресс уровня</span>
-                    <span id="exp" className="status-item-text-label">{expNow} из {levelProgressMax} STAR</span>
+                    <span id="exp" className="status-item-text-label">{expNow} из {levelProgressNext} STAR</span>
                 </div>
 
-                <ProgressBar id="exp-bar" value={expNow} max={levelProgressMax} color="#2F80ED" />
+                <ProgressBar id="exp-bar" value={expNow} max={levelProgressNext} color="#2F80ED" />
             </div>
 
+            <FallingStars
+                onTap={(event) => {
+                    // Finger math pt.1 (Ignore double click)
+                    const now = Date.now();
+                    if (now - lastTapRef.current < 50) {
+                        return;
+                    }
+                    lastTapRef.current = now;
 
-            <div className="rocket-image" onTouchStart={handleClick} ref={rocketImageRef}>
-                <img className="rocket-image" src={rocketImg} alt="Rocket" />
-            </div>
+                    // Disable scroll pt.1
+                    event.preventDefault();
 
+                    if (energyNow > 10) {
+                        // Finger math pt.2
+                        const touchCount = event.touches ? event.touches.length : 1;
 
+                        // Resources math
+                        setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
+                        setExpNow(expNow + (workerEnergyPerTap * touchCount));
+
+                        // Haptic effect
+                        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                            window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                        }
+
+                        // Add floating text
+                        const x = event.touches ? event.touches[0].clientX : event.clientX;
+                        const y = event.touches ? event.touches[0].clientY : event.clientY;
+                        addFloatingText(x, y);
+
+                        setClicks(prevClicks => prevClicks + 1);
+
+                        if (clickTimeoutRef.current) {
+                            clearTimeout(clickTimeoutRef.current);
+                        }
+
+                        clickTimeoutRef.current = setTimeout(() => {
+                            axios.post('https://dbd20rank.net/api/stars/user/update', {
+                                user_id: user_id,
+                                clicks: clicks + 1,
+                            })
+                                .then(response => {
+                                    console.log(response.data);
+                                    setClicks(0);
+                                })
+                                .catch(error => {
+                                    console.error('Error updating user stars', error);
+                                });
+                        }, 1000);
+                    }
+                }}
+            />
+
+            {floatingText.map(text => (
+                <div
+                    key={text.id}
+                    className="floating-text"
+                    style={{ left: text.x, top: text.y }}
+                >
+                    +{workerEnergyPerTap}
+                </div>
+            ))}
         </div>
     );
 }

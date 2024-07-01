@@ -11,11 +11,10 @@ import avatarImg from "../../img/avatar.png";
 import { useTelegram } from "../../hooks/useTelegram";
 
 const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext, isDev }) => {
-    const [energyNow, setEnergyNow] = useState(workerEnergy);
+    const [energyNow, setEnergyNow] = useState(null);
     const [expNow, setExpNow] = useState(1);
     const lastTapRef = useRef(0);
     const [floatingText, setFloatingText] = useState([]);
-    let username = 'loading..'
 
     const [clicks, setClicks] = useState(0);
     const clickTimeoutRef = useRef(null);
@@ -23,12 +22,10 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     // Header
     const { tg, user } = useTelegram();
     const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
+    const user_id = isDev ? '209811551' : user?.id;
 
     // Name generation
-    if (isDev)
-        username = "chief baccaraaa";
-    else
-        username = user?.first_name;
+    const username = isDev ? 'chief bacccaraaa' : user?.first_name;
 
     // Function to handle energy increase
     const increaseEnergy = () => {
@@ -76,18 +73,13 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
         verifyAvatarUrl();
     }, [avatarUrl]);
 
-    // Update Balance
+
+    // Update DB data
     useEffect(() => {
         if (balance !== undefined && !isNaN(balance)) {
             setExpNow(Number(balance));
         }
     }, [balance]);
-
-    useEffect(() => {
-        if (workerEnergy !== undefined && !isNaN(workerEnergy)) {
-            setEnergyNow(Number(workerEnergy));
-        }
-    }, [workerEnergy]);
 
     useEffect(() => {
         if (workerEnergy !== undefined && !isNaN(workerEnergy)) {
@@ -164,7 +156,7 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
                         clickTimeoutRef.current = setTimeout(() => {
                             axios.post('https://dbd20rank.net/api/stars/user/update', {
-                                user_id: "209811551",
+                                user_id: user_id,
                                 clicks: clicks + 1,
                             })
                                 .then(response => {

@@ -3,31 +3,34 @@ import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import App from './App';
 
+import { useTelegram } from './hooks/useTelegram';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const isDev = false;
 
 const AppWrapper = () => {
     const [userInfo, setUserInfo] = useState(null);
+    const { tg, user } = useTelegram();
+    const user_id = isDev ? '209811551' : user?.id;
 
     useEffect(() => {
-        // Создаем axios cancel token
         const source = axios.CancelToken.source();
 
         const fetchData = async () => {
             const url = 'https://dbd20rank.net/api/stars/user/getinfo';
             const payload = new URLSearchParams();
-            payload.append('user_id', '209811551');
+            payload.append('user_id', user_id);
 
             try {
                 const response = await axios.post(url, payload.toString(), {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    // Передаем cancel token в запрос
                     cancelToken: source.token,
                 });
                 setUserInfo(response.data);
             } catch (error) {
-                // Проверка на отмену запроса
                 if (axios.isCancel(error)) {
                     console.log('Запрос отменен');
                 } else {
@@ -38,14 +41,16 @@ const AppWrapper = () => {
 
         fetchData();
 
-        // Отмена запроса при размонтировании компонента
         return () => {
             source.cancel('Операция прервана');
         };
-    }, []); // Пустой массив зависимостей гарантирует, что useEffect выполнится только один раз
+    }, [user_id]); // Добавляем зависимость user_id, чтобы запрос выполнялся только при изменении user_id
 
     return (
-        <App userInfo={userInfo} />
+        <App
+            userInfo={userInfo}
+            isDev={isDev}
+        />
     );
 };
 
