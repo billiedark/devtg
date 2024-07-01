@@ -4,6 +4,7 @@ import { useTelegram } from './hooks/useTelegram';
 
 import avatarImg from './img/avatar.png';
 import RocketStatus from './components/RocketStatus/RocketStatus';
+import BottomMenu from './components/BottomMenu/BottomMenu';
 
 function App({ userInfo, isDev }) {
     const { tg } = useTelegram();
@@ -38,6 +39,7 @@ function App({ userInfo, isDev }) {
                 levelProgressNext={levelProgress}
                 isDev={isDev}
             />
+            <BottomMenu />
         </div>
     );
 }

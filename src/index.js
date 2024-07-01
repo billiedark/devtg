@@ -7,7 +7,7 @@ import { useTelegram } from './hooks/useTelegram';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const isDev = false;
+const isDev = true;
 
 const AppWrapper = () => {
     const [userInfo, setUserInfo] = useState(null);

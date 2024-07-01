@@ -1,0 +1,64 @@
+/* BottomMenu.css */
+
+.menu {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0;
+    position: fixed;
+    height: 75px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+}
+
+.menu-items {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.menu-item {
+    width: 75px;
+    height: 75px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.menu-item .icon {
+    width: 20px;
+    height: 20px;
+    transition: opacity 0.3s ease;
+}
+
+.menu-item .label {
+    margin-top: 5px;
+    font-size: 11px;
+    line-height: 18px;
+    letter-spacing: -0.078px;
+    color: #f2f2f2;
+    transition: color 0.3s ease;
+}
+
+.menu-item.active .label {
+    color: #2f80ed;
+}
+
+.active-line {
+    position: absolute;
+    bottom: 0;
+    width: 20%;
+    height: 2px;
+    background: #2f80ed;
+    transition: left 0.3s ease;
+}
