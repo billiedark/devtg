@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink, useNavigate  } from 'react-router-dom';
 import './BottomMenu.css';
 import { ReactComponent as EarthIcon } from '../../img/menu/earth.svg';
 import { ReactComponent as RocketIcon } from '../../img/menu/rocket.svg';
@@ -12,15 +13,27 @@ import { ReactComponent as BoxIconActive } from '../../img/menu/box_active.svg';
 import { ReactComponent as BulbIconActive } from '../../img/menu/bulb_active.svg';
 
 const menuItems = [
-    { name: 'Полет', icon: <EarthIcon />, activeIcon: <EarthIconActive /> },
-    { name: 'Экспедиции', icon: <RocketIcon />, activeIcon: <RocketIconActive /> },
-    { name: 'Друзья', icon: <FriendsIcon />, activeIcon: <FriendsIconActive /> },
-    { name: 'Задания', icon: <BoxIcon />, activeIcon: <BoxIconActive /> },
-    { name: 'Улучшения', icon: <BulbIcon />, activeIcon: <BulbIconActive /> },
+    { name: 'Полет', icon: <EarthIcon />, activeIcon: <EarthIconActive />, path: '/' },
+    { name: 'Экспедиции', icon: <RocketIcon />, activeIcon: <RocketIconActive />, path: '/expeditions' },
+    { name: 'Друзья', icon: <FriendsIcon />, activeIcon: <FriendsIconActive />, path: '/friends' },
+    { name: 'Задания', icon: <BoxIcon />, activeIcon: <BoxIconActive />, path: '/tasks' },
+    { name: 'Улучшения', icon: <BulbIcon />, activeIcon: <BulbIconActive />, path: '/upgrades' },
 ];
 
 function BottomMenu() {
     const [activeIndex, setActiveIndex] = useState(0);
+    const navigate = useNavigate();
+
+    // Функция для обработки клика на элемент меню
+    const handleMenuItemClick = (index, path) => {
+        // Haptic effect
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
+        }
+
+        setActiveIndex(index);
+        navigate(path); // Переход на указанный путь с использованием роутера
+    };
 
     return (
         <div className="menu">
@@ -29,7 +42,7 @@ function BottomMenu() {
                     <div
                         key={index}
                         className={`menu-item ${index === activeIndex ? 'active' : ''}`}
-                        onClick={() => setActiveIndex(index)}
+                        onClick={() => handleMenuItemClick(index, item.path)}
                     >
                         <div className="icon">{index === activeIndex ? item.activeIcon : item.icon}</div>
                         <div className="label">{item.name}</div>

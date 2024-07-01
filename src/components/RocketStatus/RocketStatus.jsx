@@ -90,12 +90,6 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
     return (
         <div className="rocket-status">
-            <ProfileCard
-                avatar={avatarUrl}
-                name={username}
-                level={level}
-                balance={expNow}
-            />
 
             <h2>Путешествие</h2>
             <p>Нажимайте на полотно, чтобы ускорить звезды</p>
@@ -144,8 +138,8 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                         }
 
                         // Add floating text
-                        const x = event.touches ? event.touches[0].clientX : event.clientX;
-                        const y = event.touches ? event.touches[0].clientY : event.clientY;
+                        const x = event.touches ? event.touches[0].clientX - 25 : event.clientX;
+                        const y = event.touches ? event.touches[0].clientY - 150 : event.clientY;
                         addFloatingText(x, y);
 
                         setClicks(prevClicks => prevClicks + 1);
