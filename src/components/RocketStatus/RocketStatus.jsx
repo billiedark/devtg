@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 
 import ProgressBar from '../ProgressBar/ProgressBar';
@@ -7,12 +7,12 @@ import Button from "../Button/Button";
 import './RocketStatus.css';
 import FallingStars from '../FallingStars/FallingStars';
 
-import avatarImg from "../../img/avatar.png";
 import { useTelegram } from "../../hooks/useTelegram";
+import { AppContext } from '../../AppContext';
 
-const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, level, levelProgressNext, isDev }) => {
-    const [energyNow, setEnergyNow] = useState(null);
-    const [expNow, setExpNow] = useState(1);
+const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, workerEnergyPerSecond, balance, levelProgressNext, isDev, dispatch, state }) => {
+    const { energy } = state;
+
     const lastTapRef = useRef(0);
     const [floatingText, setFloatingText] = useState([]);
 
@@ -20,27 +20,23 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
     const clickTimeoutRef = useRef(null);
 
     // Header
-    const { tg, user } = useTelegram();
-    const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
+    const { user } = useTelegram();
     const user_id = isDev ? '209811551' : user?.id;
 
-    // Name generation
-    const username = isDev ? 'chief bacccaraaa' : user?.first_name;
 
     // Function to handle energy increase
     const increaseEnergy = () => {
-        setEnergyNow(prevEnergy => Math.min(prevEnergy + workerEnergyPerSecond, workerEnergyMax));
+        dispatch({ type: 'UPDATE_ENERGY', payload: Math.min(energy + workerEnergyPerSecond, workerEnergyMax) });
     };
 
-    // Use useEffect to start the interval when component mounts
     useEffect(() => {
         const energyInterval = setInterval(() => {
             increaseEnergy();
-        }, 1000); // Every 1000ms (1 second)
+        }, 1000);
 
-        // Clean up the interval on component unmount
         return () => clearInterval(energyInterval);
-    }, []); // Empty dependency array ensures it runs only once on mount
+    }, [workerEnergyPerSecond, workerEnergyMax, energy, dispatch]);
+
 
     // Function to add floating text
     const addFloatingText = (x, y) => {
@@ -49,43 +45,8 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
 
         setTimeout(() => {
             setFloatingText(prev => prev.filter(item => item.id !== id));
-        }, 1000); // Remove after 1 second
+        }, 1000);
     };
-
-    // Profile photo handler
-    useEffect(() => {
-        const checkImage = (url) => {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        };
-
-        const verifyAvatarUrl = async () => {
-            const isValid = await checkImage(avatarUrl);
-            if (!isValid) {
-                setAvatarUrl(avatarImg);
-            }
-        };
-
-        verifyAvatarUrl();
-    }, [avatarUrl]);
-
-
-    // Update DB data
-    useEffect(() => {
-        if (balance !== undefined && !isNaN(balance)) {
-            setExpNow(Number(balance));
-        }
-    }, [balance]);
-
-    useEffect(() => {
-        if (workerEnergy !== undefined && !isNaN(workerEnergy)) {
-            setEnergyNow(Number(workerEnergy));
-        }
-    }, [workerEnergy]);
 
 
     return (
@@ -97,19 +58,19 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Энергия рабочих</span>
-                    <span id="energy" className="status-item-text-label">{energyNow} из {workerEnergyMax} ⚡</span>
+                    <span id="energy" className="status-item-text-label">{workerEnergy} из {workerEnergyMax} ⚡</span>
                 </div>
 
-                <ProgressBar id="energy-bar" value={energyNow} max={workerEnergyMax} color="#27AE60" />
+                <ProgressBar id="energy-bar" value={workerEnergy} max={workerEnergyMax} color="#27AE60" />
             </div>
 
             <div className="status-item-block">
                 <div className="status-item-text-block">
                     <span className="status-item-text-label status-item-label">Прогресс уровня</span>
-                    <span id="exp" className="status-item-text-label">{expNow} из {levelProgressNext} STAR</span>
+                    <span id="exp" className="status-item-text-label">{balance} из {levelProgressNext} STAR</span>
                 </div>
 
-                <ProgressBar id="exp-bar" value={expNow} max={levelProgressNext} color="#2F80ED" />
+                <ProgressBar id="exp-bar" value={balance} max={levelProgressNext} color="#2F80ED" />
             </div>
 
             <FallingStars
@@ -124,13 +85,16 @@ const RocketStatus = ({ workerEnergy, workerEnergyMax, workerEnergyPerTap, worke
                     // Disable scroll pt.1
                     event.preventDefault();
 
-                    if (energyNow > 10) {
+                    if (workerEnergy > 10) {
                         // Finger math pt.2
                         const touchCount = event.touches ? event.touches.length : 1;
 
                         // Resources math
-                        setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
-                        setExpNow(expNow + (workerEnergyPerTap * touchCount));
+                        // setEnergyNow(energyNow - (workerEnergyPerTap * touchCount));
+                        dispatch({ type: 'UPDATE_ENERGY', payload: workerEnergy - (workerEnergyPerTap * touchCount) });
+
+                        // setExpNow(expNow + (workerEnergyPerTap * touchCount));
+                        dispatch({ type: 'UPDATE_BALANCE', payload: Number(balance) + (workerEnergyPerTap * touchCount) });
 
                         // Haptic effect
                         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
