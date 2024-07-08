@@ -1,0 +1,224 @@
+.outer-container {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.friends-container {
+    position: relative;
+    width: 358px;
+    height: 836px;
+    background: #000000;
+    overflow: hidden;
+}
+
+
+.friends-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    top: 176px;
+}
+
+.friends-title {
+    font-family: 'Cygre Black', sans-serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 22px;
+    color: #FFFFFF;
+}
+
+.friends-levels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.additional-titles {
+    position: absolute;
+    width: 100%;
+    top: 417px;
+}
+
+.title-2 {
+    position: absolute;
+    width: 211px;
+    height: 45px;
+    left: 16px;
+    top: 0;
+}
+
+.title {
+    position: absolute;
+    width: 194px;
+    height: 22px;
+    left: calc(50% - 194px/2 - 82px);
+    top: 0;
+    font-family: 'Cygre Black', sans-serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 22px;
+    letter-spacing: -0.43px;
+    color: #FFFFFF;
+}
+
+.subtitle {
+    position: absolute;
+    width: 211px;
+    height: 18px;
+    left: calc(50% - 211px/2 - 73.5px);
+    top: 27px;
+    font-family: 'Cygre Book', sans-serif;
+    font-style: normal;
+    font-weight: 350;
+    font-size: 19px;
+    line-height: 18px;
+    letter-spacing: -0.154px;
+    color: #828282;
+}
+
+.invited-earned-container {
+    position: absolute;
+    top: 485px;
+    width: 100%;
+}
+
+.invited, .earned {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 18px;
+    margin-top: 8px;
+}
+
+.subtitle-left {
+    font-family: 'Cygre Medium', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #E0E0E0;
+    letter-spacing: -0.154px;
+    text-align: left;
+}
+
+.subtitle-right {
+    font-family: 'Cygre Medium', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: #E0E0E0;
+    letter-spacing: -0.154px;
+    text-align: right;
+}
+
+.friends-list {
+    position: absolute;
+    top: 549px;
+    width: 100%;
+    height: 287px;
+    overflow-y: auto;
+}
+
+.friend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    border-bottom: 1px solid #333333;
+}
+
+.friend-left {
+    display: flex;
+    align-items: center;
+}
+
+.friend-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 16px;
+}
+
+.friend-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.friend-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.friend-name {
+    font-family: 'Cygre Medium', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 22px;
+    color: #F2F2F2;
+}
+
+.friend-status {
+    font-family: 'Cygre Light', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 18px;
+    color: #828282;
+}
+
+.friend-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.friend-level, .friend-score {
+    font-family: 'Cygre SemiBold', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 22px;
+    color: #2F80ED;
+}
+
+.friend-score {
+    font-family: 'Cygre Light', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 18px;
+    color: #828282;
+}
+
+.friend-info-earn {
+    position: absolute;
+
+    left: calc(50% - 358px/2);
+    top: 336px;
+    width: 358px;
+
+    font-style: normal;
+    font-weight: 350;
+    font-size: 15px;
+    line-height: 18px;
+    /* or 120% */
+    text-align: center;
+    letter-spacing: -0.154px;
+}
+
+.friends-button-place {
+    top: 276px;
+    position: absolute;
+
+}

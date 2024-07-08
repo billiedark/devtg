@@ -1,0 +1,51 @@
+/* LoadingScreen.css */
+
+.loading-screen {
+    position: relative;
+    width: 390px;
+    height: 731px;
+    background: #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logotype {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    left: calc(50% - 100px/2);
+    top: 208px;
+}
+
+.logotype img {
+    width: 100%;
+    height: 100%;
+}
+
+.text {
+    margin-top: 123px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.text h1 {
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 24px;
+    width: 339px;
+}
+
+.text p {
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 29px;
+    color: #828282;
+    margin-top: 7px;
+}
+
+.blue-text {
+    color: #2F80ED;
+    display: inline;
+}

@@ -4,6 +4,7 @@
     color: white;
     margin-top: -10px;
     position: relative; /* Add position relative to contain floating text */
+    overflow: hidden;
 }
 
 .rocket-status h2 {
@@ -97,7 +98,7 @@
     }
 }
 body {
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 

@@ -1,27 +1,32 @@
 import './App.css';
 import React, { useEffect, useState, useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import { AppContext, AppProvider } from './AppContext';
 import { useTelegram } from './hooks/useTelegram';
+
 import avatarImg from './img/avatar.png';
+
 import RocketStatus from './components/RocketStatus/RocketStatus';
 import BottomMenu from './components/BottomMenu/BottomMenu';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ProfileCard from "./components/ProfileCard/ProfileCard";
 import Onboarding from './components/Onboarding/Onboarding';
-import { AppContext, AppProvider } from './AppContext';
+import LoadingScreen from './components/LoadingScreen/LoadingScreen';
+import LevelUp from './components/LevelUp/LevelUp';
+import Friends from './components/Friends/Friends';
 
 function App({ userInfo, isDev }) {
     const { tg, user } = useTelegram();
     const [avatarUrl, setAvatarUrl] = useState(`https://dbd20rank.net/static/img/stars_avatars/${user?.id}.jpg`);
     const username = isDev ? 'chief bacccaraaa' : user?.first_name;
     const { state, dispatch } = useContext(AppContext);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         tg.ready();
         tg.expand();
-        Telegram.WebApp.setHeaderColor('secondary_bg_color');
-    }, [tg]);
+        // Telegram.WebApp.setHeaderColor('secondary_bg_color');
 
-    useEffect(() => {
         const checkImage = (url) => {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -38,23 +43,29 @@ function App({ userInfo, isDev }) {
             }
         };
 
-        verifyAvatarUrl();
-    }, [avatarUrl]);
+        const fetchData = async () => {
+            await verifyAvatarUrl();
+            if (userInfo) {
+                dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+            }
+        };
 
+        fetchData();
 
-    useEffect(() => {
-        if (userInfo) {
-            dispatch({ type: 'SET_USER_INFO', payload: userInfo });
-        }
-    }, [userInfo, dispatch]);
+        // Set the loading state to false after all resources are loaded
+        window.onload = () => {
+            setIsLoading(false);
+        };
+    }, [avatarUrl, userInfo, dispatch, tg]);
 
-    if (!userInfo) {
-        return <div>Loading...</div>;
+    if (isLoading) {
+        return <LoadingScreen />;
     }
 
     return (
         <Router>
             <div className="App">
+                {/* <LevelUp /> */}
                 <ProfileCard
                     avatar={avatarUrl}
                     name={username}
@@ -76,7 +87,9 @@ function App({ userInfo, isDev }) {
                         />
                     } />
                     <Route path="/expeditions" exact element={<h1>В разработке экспедиции</h1>} />
-                    <Route path="/friends" exact element={<h1>Друзей пока нет. В поиске</h1>} />
+                    <Route path="/friends" exact element={
+                        <Friends />
+                    } />
                     <Route path="/tasks" exact element={<h1>В разработке задания</h1>} />
                     <Route path="/upgrades" exact element={<h1>В разработке улучшения</h1>} />
                 </Routes>

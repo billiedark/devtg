@@ -1,0 +1,96 @@
+/* LevelUp.css */
+
+.level-up {
+    width: 390px;
+    height: 731px;
+    background: #000000;
+}
+
+.back {
+    position: absolute;
+    width: 390px;
+    height: 731px;
+    left: 0;
+    top: 0;
+    background: url('../../img/backs.png');
+}
+
+.frame {
+    position: absolute;
+    width: 390px;
+    height: 731px;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.61);
+    backdrop-filter: blur(4.5px);
+    /* Note: backdrop-filter has minimal browser support */
+}
+
+.character-image {
+    position: absolute;
+    width: 390px;
+    height: 487px;
+    left: 0;
+    top: 244px;
+}
+
+.title {
+    position: absolute;
+    width: 339px;
+    height: 48px;
+    left: 16px;
+    top: 60px;
+    font-family: 'Cygre Black', sans-serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 24px;
+    color: #F2F2F2;
+}
+
+.subtitle {
+    position: absolute;
+    width: 310px;
+    height: 29px;
+    left: 16px;
+    top: 147px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 25px;
+    line-height: 29px;
+    color: #F2F2F2;
+}
+
+.confirm-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0 24px;
+    position: absolute;
+    width: 358px;
+    height: 50px;
+    left: calc(50% - 179px);
+    bottom: 21px;
+    background: #F2F2F2;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+}
+
+.button-label {
+    width: 212px;
+    height: 22px;
+    font-family: 'SF Pro', sans-serif;
+    font-style: normal;
+    font-weight: 590;
+    font-size: 17px;
+    line-height: 22px;
+    text-align: center;
+    color: #333333;
+}
+
+.blue-text {
+    color: #2F80ED;
+    display: inline;
+}
